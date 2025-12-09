@@ -177,7 +177,7 @@ DELETE /workspaces/comments/:commentId
 
 ---
 
-## 🚧 Pending Features
+##  Pending Features
 
 ### Activity Logs System
 - Track all user actions (create, update, delete)
@@ -199,7 +199,7 @@ DELETE /workspaces/comments/:commentId
 
 ---
 
-## 📖 Documentation
+## Documentation
 
 - **[Backend Documentation](./backend/README.md)** - Detailed API docs, database schema, deployment
 - **Frontend Documentation** - Coming soon
