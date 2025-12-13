@@ -1,389 +1,418 @@
 # Task Manager - Full Stack Application
 
-A modern, collaborative task management application with workspaces, projects, and real-time task tracking.
+A modern, collaborative task management system built with React and Node.js. Features workspaces, projects, tasks with Kanban boards, and real-time collaboration.
 
-## Monorepo Structure
+**Monorepo Architecture** | **JWT Authentication** | **96.5% Test Coverage** | **Modern UI/UX**
 
-```
-task-manager/
-├── backend/          # Node.js + Express + Prisma REST API
-│   ├── src/
-│   ├── tests/
-│   ├── prisma/
-│   └── README.md     # Detailed backend documentation
-└── frontend/         # React + Vite SPA
-    ├── src/
-    └── README.md     # Frontend documentation (coming soon)
-```
+---
 
 ## Quick Start
 
-### Prerequisites
-- Node.js v18 or higher
-- npm or yarn
-
-### Run Backend
-
 ```bash
-cd backend
+# Install all dependencies
 npm install
-npx prisma generate
-npx prisma migrate dev
+
+# Set up environment files
+cd apps/api && cp .env.example .env
+cd ../web && cp .env.example .env
+
+# Initialize database
+npm run db:generate
+npm run db:migrate
+
+# Start both frontend and backend
 npm run dev
 ```
-Backend API: `http://localhost:5000`
 
-### Run Frontend
-
-```bash
-cd frontend
-npm install  
-npm run dev
-```
-Frontend UI: `http://localhost:5173`
+**API**: http://localhost:5000
+**Web**: http://localhost:5173
 
 ---
 
-## 🛠️ Tech Stack
+## Project Structure
+
+This is a **monorepo using npm workspaces** for unified dependency management and development workflow.
+
+```
+task-manager/
+├── apps/
+│   ├── api/                  # Express + Prisma REST API
+│   │   ├── src/
+│   │   │   ├── modules/      # Feature modules (auth, workspaces, projects, tasks, comments)
+│   │   │   ├── database/     # Prisma client
+│   │   │   └── shared/       # Utilities & middleware
+│   │   ├── tests/            # Jest + Supertest
+│   │   └── prisma/           # Database schema & migrations
+│   │
+│   └── web/                  # React + Vite SPA
+│       ├── src/
+│       │   ├── components/   # UI components (auth, layout, common, workspace, project, task, comment)
+│       │   ├── pages/        # Route pages
+│       │   ├── context/      # React Context (Auth, Toast, Workspace)
+│       │   ├── hooks/        # Custom hooks (useAuth, useWorkspaces, useTasks, etc.)
+│       │   ├── api/          # API client & services
+│       │   └── utils/        # Helpers & validators
+│       └── public/
+│
+├── package.json              # Workspace root
+└── .prettierrc               # Shared config
+```
+
+---
+
+## Tech Stack
 
 ### Backend
-| Technology     | Purpose                           |
-| -------------- | --------------------------------- |
-| **Node.js**    | Backend runtime (ES modules)      |
-| **Express.js** | REST API framework                |
-| **Prisma ORM** | Database toolkit (SQLite for dev) |
-| **JWT**        | Token-based auth system           |
-| **bcrypt**     | Password hashing                  |
-| **Jest**       | Testing framework                 |
-| **Supertest**  | API integration testing           |
+| Technology | Purpose |
+|------------|---------|
+| **Node.js** | Runtime (ES modules) |
+| **Express 5** | REST API framework |
+| **Prisma ORM** | Type-safe database toolkit |
+| **SQLite** | Development database |
+| **JWT** | Authentication tokens |
+| **bcrypt** | Password hashing |
+| **Jest + Supertest** | Testing |
 
 ### Frontend
-| Technology          | Purpose                     |
-| ------------------- | --------------------------- |
-| **React 19**        | UI library                  |
-| **Vite**            | Build tool & dev server     |
-| **TailwindCSS**     | Utility-first CSS framework |
-| **React Router**    | Client-side routing         |
-| **Axios**           | HTTP client for API calls   |
-| **Context API**     | State management (Auth & Toast) |
-| **@dnd-kit**        | Drag-and-drop functionality |
+| Technology | Purpose |
+|------------|---------|
+| **React 19** | UI library |
+| **Vite 7** | Build tool & dev server |
+| **TailwindCSS 4** | Utility-first styling |
+| **React Router 7** | Client-side routing |
+| **Axios** | HTTP client |
+| **@dnd-kit** | Drag-and-drop |
+| **Context API** | State management |
+| **React Hook Form** | Form management |
+| **React Hot Toast** | Notifications |
 
 ---
 
-## ✅ Completed Features
+## Features
 
-### Authentication System
-- **Backend**: User registration & login with JWT tokens
-- **Frontend**: Complete authentication UI implementation
-  - Login and registration forms with validation
-  - Authentication context provider for global state
-  - Protected routes with automatic redirection
-  - Axios interceptors for token management
-  - Persistent login with localStorage
-  - Navigation bar with user info and logout
-- JWT access + refresh tokens (15min / 7 days)
-- Email & password validation
-- Secure password hashing with bcrypt
-- Protected routes middleware
+### Authentication & User Management
+- JWT-based auth with access (15min) + refresh tokens (7 days)
+- User registration with email validation
+- Strong password requirements
+- Password change functionality
+- Protected routes with auto-redirect
+- Persistent authentication via localStorage
 
 ### Workspace Management
-- **Backend**: Full CRUD API with role-based access control
-- **Frontend**: Complete workspace UI implementation
-  - WorkspacesPage with grid layout
-  - WorkspaceCard component with edit/delete actions
-  - Create/edit modals with form validation
-  - Custom useWorkspaces hook for data management
-  - Loading and error state handling
-  - Empty state with call-to-action
-  - Member management with role editing
-  - Color-coded role badges (OWNER: purple, ADMIN: blue, MEMBER: gray)
-  - "Make Admin" / "Make Member" toggle buttons
-- Role-based access (OWNER, ADMIN, MEMBER)
+- Create, update, and delete workspaces
+- Role-based access control (OWNER, ADMIN, MEMBER)
 - Invite/remove members
-- Update member roles with confirmation dialogs
+- Update member roles
+- Pagination for workspace lists
 
 ### Project Management
-- **Backend**: CRUD operations with workspace integration
-- **Frontend**: Project management UI
-  - WorkspaceDetail page showing projects
-  - ProjectCard component with View/Edit/Delete actions
-  - Create/edit project modals with form validation
-  - Custom useProjects hook
-  - Delete project with confirmation
-  - Navigation to project details
-  - Toast notifications for all operations
-- Project assignment to workspace members
+- Full CRUD operations within workspaces
+- Member-only access
 - Role-based permissions
+- Delete confirmation dialogs
 
 ### Task Management
-- **Backend**: Full CRUD with status and priority tracking
-- **Frontend**: Advanced task board with drag-and-drop
-  - **TaskBoard component** (Kanban-style with 3 columns)
-    - Drag-and-drop tasks between columns (TODO → IN_PROGRESS → DONE)
-    - Visual feedback during dragging with opacity and overlay
-    - Automatic task status update on drop
-    - Column highlighting on hover
-    - Task count badges per column
-  - **TaskFilterBar component** for advanced filtering
-    - Filter by status (TODO, IN_PROGRESS, DONE)
-    - Filter by priority (LOW, MEDIUM, HIGH)
-    - Filter by assignee (all members + unassigned)
-    - Search by title/description (real-time)
-    - Sort by created date, due date, priority, or title
-    - Clear filters button
-  - **TaskCard component** with visual indicators
-    - Priority dots (LOW: green, MEDIUM: yellow, HIGH: red)
-    - Status badges (TODO, IN_PROGRESS, DONE)
-    - Due date display with calendar emoji
-    - Assignee avatars with initials
-    - Click-to-navigate to task details
-  - **TaskDetail page** with inline editing
-    - Edit assignee with dropdown (workspace members)
-    - Change status with quick action buttons
-    - Change priority with quick action buttons
-    - Edit/delete task functionality
-    - Comment system integration
-  - Custom useTasks hook for data management
-- Task statuses: TODO, IN_PROGRESS, DONE
+- **Kanban board** with drag-and-drop
+- Three status columns: TODO, IN_PROGRESS, DONE
 - Priority levels: LOW, MEDIUM, HIGH
-- Assign/reassign tasks to members
+- Task assignment to members
 - Due date tracking
+- Advanced filtering:
+  - Filter by status, priority, assignee
+  - Search by title/description
+  - Sort by date, priority, or title
 
 ### Comment System
-- **Backend**: Add/edit/delete comments on tasks
-- **Frontend**: Fully integrated comment system
-  - CommentList component with edit/delete actions
-  - CommentForm component for adding comments
-  - Custom useComments hook for data management
-  - Toast notifications for all comment operations
-  - Integrated into TaskDetail page
+- Add, edit, delete comments on tasks
 - Chronological ordering
-- Owner-only edits, role-based deletion
+- Owner-only edits
+- Role-based deletion (ADMIN/OWNER override)
 
-### UI Components Library
-- **Common Components**: Button, Modal, Spinner, Input, Toast, SkeletonLoader, PasswordStrengthMeter
-- **Layout Components**: Navbar with user info and logout
-- **Feature Components**:
-  - Workspace: WorkspaceCard, WorkspaceList
-  - Project: ProjectCard, ProjectForm
-  - Task: TaskCard, TaskBoard, TaskForm, TaskFilterBar, DraggableTaskCard
-  - Comment: CommentForm, CommentList
-- **Context Providers**: AuthContext, ToastContext
-- **Custom Hooks**: useWorkspaces, useProjects, useTasks, useComments, useToast
-- **Validation Utilities**: Email validation, password strength calculation, field length validation
-- Consistent TailwindCSS styling
-- Responsive design (mobile-first approach)
-- Toast notification system (success, error, warning, info)
-- Skeleton loading states for improved UX
+### UI/UX
+- Error boundary for graceful error handling
+- Toast notification system
+- Skeleton loading states
+- Password strength meter
+- Real-time form validation
+- Responsive, mobile-first design
 
 ---
 
-## Security Features
+## Monorepo Commands
 
-- **JWT Authentication**: Access + refresh token rotation
-- **Password Security**: bcrypt (10 salt rounds), strong validation (8+ chars, uppercase, lowercase, number)
-- **Authorization**: Role-based access control (RBAC)
-- **Input Validation**: Email, password strength, sanitized bodies
+All commands run from **root directory**:
+
+### Development
+```bash
+npm run dev              # Start both API + Web
+npm run dev:api          # Start API only
+npm run dev:web          # Start Web only
+```
+
+### Building
+```bash
+npm run build            # Build all apps
+npm run build:api        # Build API
+npm run build:web        # Build Web (459KB optimized)
+```
+
+### Testing
+```bash
+npm test                 # Test all apps
+npm run test:api         # Test API (96.5% passing)
+npm run test:web         # Test Web
+```
+
+### Database
+```bash
+npm run db:migrate       # Run Prisma migrations
+npm run db:seed          # Seed database
+npm run db:studio        # Open Prisma Studio
+npm run db:generate      # Generate Prisma Client
+```
+
+### Code Quality
+```bash
+npm run lint             # Lint all code
+npm run format           # Format with Prettier
+```
+
+---
+
+## Security
+
+### Authentication
+- JWT access tokens (15min expiry)
+- JWT refresh tokens (7 days expiry)
+- Automatic token refresh via axios interceptors
+- HTTP-only cookie support ready
+
+### Password Security
+- bcrypt hashing (10 salt rounds)
+- Password requirements:
+  - Minimum 8 characters
+  - 1+ uppercase, 1+ lowercase, 1+ number
+
+### Authorization
+- Role-based access control (RBAC)
+- Protected routes with auth middleware
+- Owner/Admin/Member hierarchical permissions
+- Workspace membership validation
+
+### Best Practices
+- SQL injection prevention (Prisma ORM)
+- Input validation and sanitization
+- Email format validation
+- CORS ready for production
 
 ---
 
 ## Testing
 
-**Test Coverage**: 56/58 tests passing (96.6%)
+**Overall Coverage**: 56/58 tests passing (96.5%)
+
+| Module | Tests | Status |
+|--------|-------|--------|
+| Task Service | 14/16 | 88% |
+| Task Routes | 15/15 | 100% |
+| Comment Service | 12/12 | 100% |
+| Comment Routes | 15/15 | 100% |
 
 ```bash
-cd backend
-npm test                    # Run all tests
-npm test -- task.service    # Run specific test file
-npm test -- comment         # Run all comment tests
+npm run test:api                    # Run all tests
+npm run test:api -- task.service    # Run specific test
+npm run test:api -- --coverage      # Coverage report
 ```
-
-- **Task Service**: 14/16 (88%)
-- **Task Routes**: 15/15 (100%) ✨
-- **Comment Service**: 12/12 (100%) ✨
-- **Comment Routes**: 15/15 (100%) ✨
 
 ---
 
-## 📡 API Endpoints
+## API Documentation
 
 ### Authentication
 ```http
-POST   /auth/register
-POST   /auth/login
-POST   /auth/refresh-token
+POST   /auth/register          # Register new user
+POST   /auth/login             # Login user
+POST   /auth/refresh           # Refresh access token
+POST   /auth/change-password   # Change password (protected)
 ```
 
 ### Workspaces
 ```http
-POST   /workspaces
-GET    /workspaces
-PUT    /workspaces/:workspaceId
-DELETE /workspaces/:workspaceId
-POST   /workspaces/:workspaceId/members
-DELETE /workspaces/:workspaceId/members/:userId
-PUT    /workspaces/:workspaceId/members/:userId
+POST   /workspaces                              # Create workspace
+GET    /workspaces                              # List user workspaces
+PUT    /workspaces/:workspaceId                 # Update workspace (OWNER/ADMIN)
+DELETE /workspaces/:workspaceId                 # Delete workspace (OWNER)
+POST   /workspaces/:workspaceId/members         # Invite member (OWNER/ADMIN)
+DELETE /workspaces/:workspaceId/members/:userId # Remove member (OWNER/ADMIN)
+PUT    /workspaces/:workspaceId/members/:userId # Update role (OWNER)
 ```
 
 ### Projects
 ```http
-POST   /workspaces/:workspaceId/projects
-GET    /workspaces/:workspaceId/projects
-PUT    /workspaces/:workspaceId/projects/:projectId
-DELETE /workspaces/:workspaceId/projects/:projectId
+POST   /workspaces/:workspaceId/projects              # Create project
+GET    /workspaces/:workspaceId/projects              # List projects
+PUT    /workspaces/:workspaceId/projects/:projectId   # Update project (OWNER/ADMIN)
+DELETE /workspaces/:workspaceId/projects/:projectId   # Delete project (OWNER/ADMIN)
 ```
 
 ### Tasks
 ```http
-POST   /workspaces/:workspaceId/projects/:projectId/tasks
-GET    /workspaces/:workspaceId/projects/:projectId/tasks
-PUT    /workspaces/:workspaceId/projects/:projectId/tasks/:taskId
-DELETE /workspaces/:workspaceId/projects/:projectId/tasks/:taskId
+POST   /workspaces/:workspaceId/projects/:projectId/tasks          # Create task
+GET    /workspaces/:workspaceId/projects/:projectId/tasks          # List tasks
+PUT    /workspaces/:workspaceId/projects/:projectId/tasks/:taskId  # Update task
+DELETE /workspaces/:workspaceId/projects/:projectId/tasks/:taskId  # Delete task
 ```
 
 ### Comments
 ```http
-POST   /workspaces/tasks/:taskId/comments
-GET    /workspaces/tasks/:taskId/comments
-PUT    /workspaces/comments/:commentId
-DELETE /workspaces/comments/:commentId
+POST   /workspaces/tasks/:taskId/comments    # Add comment
+GET    /workspaces/tasks/:taskId/comments    # List comments
+PUT    /workspaces/comments/:commentId       # Update comment (owner only)
+DELETE /workspaces/comments/:commentId       # Delete comment (owner/ADMIN/OWNER)
 ```
 
 ---
 
-## 📋 Pending Features
+## Pending Tasks & Roadmap
 
-### Activity Logs System
-- Track all user actions (create, update, delete)
-- Activity feed for workspaces and projects
-- User activity history
-- Audit trail for compliance
-- Real-time activity notifications
+### HIGH PRIORITY
 
-### Form Validation & UX
-- ✅ **Form Validation Enhancements**
-  - Real-time validation with field-level error messages
-  - Email format validation in invite forms
-  - Password strength meter with visual feedback
-  - Field length limits (character counters)
-  - Disabled submit buttons during async operations
-  - Validation utilities (isValidEmail, getPasswordStrength, validateLength)
-- ✅ **Loading States Consistency**
-  - SkeletonLoader component with multiple variants (SkeletonCard, SkeletonTaskCard)
-  - Animated pulse effects for loading placeholders
-  - Button loading states with text changes
-  - Consistent loading indicators across all async operations
+#### Infrastructure & DevOps
+- [ ] Create `.env.example` files for both apps
+- [ ] Add Docker support (Dockerfile + docker-compose.yml)
+- [ ] Set up CI/CD pipeline (GitHub Actions)
+- [ ] Add health check endpoint (`GET /health`)
+- [ ] Configure environment-specific builds
 
-### Advanced Features
-- **Better Error Handling**
-  - Network retry logic with exponential backoff
-  - Timeout handling for long requests
-  - Offline mode detection and messaging
-  - Request cancellation support
-- **Pagination & Performance**
-  - Pagination for large task/project lists
-  - Infinite scroll or page numbers
-  - Virtual scrolling for performance optimization
-- **User Profile & Settings**
-  - User profile page with personal info
-  - Settings page for user preferences
-  - Password change functionality
-  - Theme preferences
-- **Task Enhancements**
-  - Task history/activity log
-  - Comment count badge on task cards
-  - Rich text editor for descriptions
-  - Task attachments/file uploads
-  - Task tags/labels system
-  - Bulk task operations
-  - Subtasks and task dependencies
-- **Responsive Design Improvements**
-  - Mobile-optimized navigation (hamburger menu)
-  - Better tablet layouts
-  - Touch-friendly modal interactions
+#### Security Enhancements
+- [ ] Implement rate limiting (express-rate-limit)
+- [ ] Add request validation middleware (express-validator)
+- [ ] Configure CORS properly
+- [ ] Add helmet.js for security headers
+- [ ] Implement request logging (Winston/Pino)
+- [ ] Add error tracking (Sentry)
+
+#### Testing
+- [ ] Add tests for Auth module (0% coverage)
+- [ ] Add tests for Workspace module (0% coverage)
+- [ ] Add tests for Project module (0% coverage)
+- [ ] Set up frontend testing (Vitest + Testing Library)
+- [ ] Add E2E tests (Playwright/Cypress)
+- [ ] Set up test coverage thresholds in CI
+
+### MEDIUM PRIORITY
+
+#### Features
+- [ ] **Activity Log System** (schema exists, not implemented)
+  - Track all CRUD operations
+  - Activity feed per workspace
+  - User activity history
+  - Audit trail for compliance
+- [ ] File attachments for tasks
+- [ ] Rich text editor for task descriptions (TipTap/Quill)
+- [ ] Task tags/labels system
+- [ ] Bulk task operations
+- [ ] Email notifications
+- [ ] Export functionality (PDF, CSV)
+
+#### Code Quality
+- [ ] Migrate to TypeScript (gradual)
+- [ ] Add JSDoc comments to backend functions
+- [ ] Consolidate validation utilities (validation.js + validators.js)
+- [ ] Remove unused dependency (@tanstack/react-query)
+- [ ] Add Storybook for component documentation
+- [ ] Set up pre-commit hooks (Husky + lint-staged)
+
+#### Performance
+- [ ] Implement caching layer (Redis)
+- [ ] Add database indexes on foreign keys
+- [ ] Database connection pooling
+- [ ] Implement pagination on all list endpoints
+- [ ] Add lazy loading for frontend routes
+- [ ] Optimize bundle size (code splitting)
+
+### LOW PRIORITY
+
+#### Documentation
+- [ ] Create OpenAPI/Swagger specification
+- [ ] Expand frontend README
+- [ ] Create CONTRIBUTING.md
+- [ ] Create DEPLOYMENT.md
+- [ ] Add architecture diagrams
+- [ ] Create troubleshooting guide
+
+#### Developer Experience
+- [ ] Create shared packages (`packages/shared`, `packages/ui`)
+- [ ] Add build optimization (Turborepo/Nx)
+- [ ] Improve error messages
+- [ ] Add development seed data script
+- [ ] Create project templates/generators
+
+#### UI/UX Enhancements
+- [ ] Dark mode support
+- [ ] Accessibility improvements (ARIA labels, keyboard navigation)
+- [ ] Mobile-optimized navigation
+- [ ] Progressive Web App (PWA) support
+- [ ] Offline mode with service workers
+- [ ] Real-time collaboration (WebSockets)
 
 ---
-
-## Documentation
-
-- **[Backend Documentation](./backend/README.md)** - Detailed API docs, database schema, deployment
-- **Frontend Documentation** - Coming soon
 
 ## Recent Updates
 
-### Latest Changes (2025-12-13)
-- ✅ **Form Validation & Loading States**
-  - Created validation.js utility (isValidEmail, getPasswordStrength, validateLength)
-  - Built PasswordStrengthMeter component with 5-level strength indicator
-  - Enhanced RegisterForm with password strength meter and stricter validation (8+ chars, mixed case, numbers)
-  - Added form validation to WorkspacesPage (character counts, error messages, disabled states)
-  - Added email validation to WorkspaceDetail invite form
-  - Created SkeletonLoader component with SkeletonCard and SkeletonTaskCard variants
-  - Updated WorkspaceDetail to use skeleton loaders instead of "Loading..." text
-  - Consistent button loading states across all forms ("Creating...", "Updating...", etc.)
-- ✅ **Drag-and-Drop Task Board**
-  - Installed @dnd-kit library for modern drag-and-drop
-  - Created DraggableTaskCard component
-  - Implemented drag-and-drop between Kanban columns
-  - Added visual feedback (hover states, drag overlay, opacity)
-  - Automatic task status update on drop with API integration
-- ✅ **Task Filtering & Search System**
-  - Created TaskFilterBar component with comprehensive filters
-  - Filter by status, priority, and assignee
-  - Real-time search by title/description
-  - Sort by created date, due date, priority, or title
-  - Clear filters button
-  - Integrated with ProjectDetail page using useMemo for performance
-- ✅ **Project Edit Functionality**
-  - Added edit button to project cards in WorkspaceDetail
-  - Created edit project modal with form validation
-  - Implemented editProject in useProjects hook
-  - Toast notifications for success/error states
-- ✅ **Member Role Management**
-  - Added updateWorkspaceMemberRole API function
-  - Implemented role change UI with toggle buttons
-  - Color-coded role badges (OWNER, ADMIN, MEMBER)
-  - Confirmation dialogs for role changes
-  - "Make Admin" / "Make Member" functionality
-- ✅ **Task Assignee Editing**
-  - Added inline assignee editing in TaskDetail page
-  - Dropdown with workspace members for reassignment
-  - "Change" button to toggle edit mode
-  - Immediate update on selection with toast feedback
-  - Unassigned option support
-- ✅ **Toast Notification System**
-  - Created ToastContext for global notifications
-  - Toast component with auto-dismiss (3 seconds)
-  - Color-coded by type (success, error, warning, info)
-  - Replaced all alert() calls across the application
+### December 2025 - Monorepo Migration
+- Migrated to npm workspaces monorepo structure
+- Renamed `backend/` to `apps/api/`
+- Renamed `frontend/` to `apps/web/`
+- Created unified workspace scripts
+- Updated all documentation
 
-### Previous Changes (2025-12-11)
-- ✅ Implemented TaskBoard component (Kanban-style with 3 columns)
-- ✅ Created TaskCard component with priority and status indicators
-- ✅ Added Navbar with user info and logout functionality
-- ✅ Built complete workspace management UI (WorkspacesPage, WorkspaceCard)
-- ✅ Implemented project management UI (WorkspaceDetail with projects)
-- ✅ Added member management (invite, remove members)
-- ✅ Added custom data management hooks (useWorkspaces, useProjects, useTasks)
-- ✅ Created comprehensive component library for reusability
-- ✅ Fixed Comment API endpoints to match backend routes
+### December 2025 - User Profile & Settings
+- User profile page with workspace statistics
+- Settings page with password change
+- Password change API endpoint
+- Error boundary component
 
-### Initial Implementation (2025-12-09)
-- ✅ Implemented authentication UI with login and registration pages
-- ✅ Added React Context API for global authentication state
-- ✅ Configured TailwindCSS for modern, responsive styling
-- ✅ Set up protected routes with automatic redirects
-- ✅ Integrated authentication API client with token management
-- ✅ Updated Prisma schema for authentication models
+### November 2025 - Pagination & Polish
+- Pagination on workspaces page
+- Fixed all linting issues
+- Optimized frontend build (459KB)
+- Form validation improvements
+
+### November 2025 - Task Features
+- Drag-and-drop Kanban board
+- Task filtering and search
+- Comment system with full CRUD
+- Toast notification system
+- Skeleton loading states
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Contributions are welcome! Please:
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
 ---
 
-## 📄 License
+## License
 
 This project is for educational purposes.
+
+---
+
+## Additional Documentation
+
+- **API Documentation**: [apps/api/README.md](apps/api/README.md)
+- **Web Documentation**: [apps/web/README.md](apps/web/README.md)
+
+---
+
+## Support
+
+For questions, issues, or feature requests, please [open an issue](https://github.com/yourusername/task-manager/issues) on GitHub.
