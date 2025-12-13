@@ -45,6 +45,17 @@ export const isRequired = (value) => {
   return value !== null && value !== undefined;
 };
 
+// Password validation
+export const validatePassword = (password) => {
+  if (!password) {
+    return { valid: false, message: 'Password is required' };
+  }
+  if (password.length < 8) {
+    return { valid: false, message: 'Password must be at least 8 characters long' };
+  }
+  return { valid: true, message: '' };
+};
+
 // Validation errors object
 export const createErrorState = () => ({
   name: '',

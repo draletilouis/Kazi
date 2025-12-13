@@ -161,7 +161,7 @@ Frontend UI: `http://localhost:5173`
 - Owner-only edits, role-based deletion
 
 ### UI Components Library
-- **Common Components**: Button, Modal, Spinner, Input, Toast
+- **Common Components**: Button, Modal, Spinner, Input, Toast, SkeletonLoader, PasswordStrengthMeter
 - **Layout Components**: Navbar with user info and logout
 - **Feature Components**:
   - Workspace: WorkspaceCard, WorkspaceList
@@ -170,9 +170,11 @@ Frontend UI: `http://localhost:5173`
   - Comment: CommentForm, CommentList
 - **Context Providers**: AuthContext, ToastContext
 - **Custom Hooks**: useWorkspaces, useProjects, useTasks, useComments, useToast
+- **Validation Utilities**: Email validation, password strength calculation, field length validation
 - Consistent TailwindCSS styling
 - Responsive design (mobile-first approach)
 - Toast notification system (success, error, warning, info)
+- Skeleton loading states for improved UX
 
 ---
 
@@ -258,21 +260,26 @@ DELETE /workspaces/comments/:commentId
 - Audit trail for compliance
 - Real-time activity notifications
 
-### Advanced Features
-- **Form Validation Enhancements**
+### Form Validation & UX
+- ✅ **Form Validation Enhancements**
   - Real-time validation with field-level error messages
   - Email format validation in invite forms
-  - Password strength meter
-  - Field length limits and validation feedback
+  - Password strength meter with visual feedback
+  - Field length limits (character counters)
+  - Disabled submit buttons during async operations
+  - Validation utilities (isValidEmail, getPasswordStrength, validateLength)
+- ✅ **Loading States Consistency**
+  - SkeletonLoader component with multiple variants (SkeletonCard, SkeletonTaskCard)
+  - Animated pulse effects for loading placeholders
+  - Button loading states with text changes
+  - Consistent loading indicators across all async operations
+
+### Advanced Features
 - **Better Error Handling**
   - Network retry logic with exponential backoff
   - Timeout handling for long requests
   - Offline mode detection and messaging
   - Request cancellation support
-- **Loading States Consistency**
-  - Skeleton loaders for better UX
-  - Consistent spinner usage across all components
-  - Loading indicators for async operations
 - **Pagination & Performance**
   - Pagination for large task/project lists
   - Infinite scroll or page numbers
@@ -305,6 +312,15 @@ DELETE /workspaces/comments/:commentId
 ## Recent Updates
 
 ### Latest Changes (2025-12-13)
+- ✅ **Form Validation & Loading States**
+  - Created validation.js utility (isValidEmail, getPasswordStrength, validateLength)
+  - Built PasswordStrengthMeter component with 5-level strength indicator
+  - Enhanced RegisterForm with password strength meter and stricter validation (8+ chars, mixed case, numbers)
+  - Added form validation to WorkspacesPage (character counts, error messages, disabled states)
+  - Added email validation to WorkspaceDetail invite form
+  - Created SkeletonLoader component with SkeletonCard and SkeletonTaskCard variants
+  - Updated WorkspaceDetail to use skeleton loaders instead of "Loading..." text
+  - Consistent button loading states across all forms ("Creating...", "Updating...", etc.)
 - ✅ **Drag-and-Drop Task Board**
   - Installed @dnd-kit library for modern drag-and-drop
   - Created DraggableTaskCard component

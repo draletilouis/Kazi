@@ -36,3 +36,16 @@ export async function refresh(req, res) {
         res.status(401).json({ error: error.message });
     }
 }
+
+/**
+ * Handle password change
+ */
+export async function changePassword(req, res) {
+    try {
+        const userId = req.user.userId;
+        const result = await AuthService.changePassword(userId, req.body);
+        res.status(200).json(result);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+}

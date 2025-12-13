@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { useTasks } from '../../hooks/useTasks';
 import { useProjects } from '../../hooks/useProjects';
 import TaskBoard from '../../components/task/TaskBoard';
@@ -11,7 +11,6 @@ import { useToast } from '../../context/ToastContext';
 
 const ProjectDetail = () => {
   const { workspaceId, projectId } = useParams();
-  const navigate = useNavigate();
   const toast = useToast();
   const { tasks, loading: tasksLoading, error: tasksError, addTask, fetchTasks } = useTasks(workspaceId, projectId);
   const { projects, loading: projectsLoading } = useProjects(workspaceId);
@@ -65,6 +64,7 @@ const ProjectDetail = () => {
     }
 
     // Apply sorting
+    const priorityOrder = { HIGH: 0, MEDIUM: 1, LOW: 2 };
     filtered.sort((a, b) => {
       switch (filters.sortBy) {
         case 'dueDate':
@@ -72,7 +72,6 @@ const ProjectDetail = () => {
           if (!b.dueDate) return -1;
           return new Date(a.dueDate) - new Date(b.dueDate);
         case 'priority':
-          const priorityOrder = { HIGH: 0, MEDIUM: 1, LOW: 2 };
           return priorityOrder[a.priority] - priorityOrder[b.priority];
         case 'title':
           return a.title.localeCompare(b.title);

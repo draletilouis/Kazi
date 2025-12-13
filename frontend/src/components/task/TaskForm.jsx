@@ -3,7 +3,7 @@ import Button from '../common/Button';
 import Input from '../common/Input';
 import { getWorkspaceMembers } from '../../api/workspaces';
 
-const TaskForm = ({ onSubmit, onCancel, initialData = null, workspaceId, projectId }) => {
+const TaskForm = ({ onSubmit, onCancel, initialData = null, workspaceId }) => {
   const [formData, setFormData] = useState({
     title: initialData?.title || '',
     description: initialData?.description || '',

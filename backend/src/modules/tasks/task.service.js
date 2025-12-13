@@ -239,9 +239,10 @@ export async function deleteTask(workspaceId, projectId, taskId, userId) {
         throw new Error("Task not found in this project");
     }
     //permission check: only task creator or workspace ADMIN/OWNER can delete
-    const isOwnerOrAdmin = membership.role === 'OWNER' || membership.role === 'ADMIN';
+    const isTaskCreator = existingTask.createdBy === userId;
+    const isOwnerOrAdmin = (membership.role === 'OWNER' || membership.role === 'ADMIN');
 
-    if (existingTask.createdBy !== userId && !isOwnerOrAdmin) {
+    if (!isTaskCreator && !isOwnerOrAdmin) {
         throw new Error("You do not have permission to delete this task");
     }
 

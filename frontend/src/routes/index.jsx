@@ -12,6 +12,8 @@ import WorkspacesPage from '../pages/workspaces/WorkspacesPage';
 import WorkspaceDetail from '../pages/workspaces/WorkspaceDetail';
 import ProjectDetail from '../pages/projects/ProjectDetail';
 import TaskDetail from '../pages/tasks/TaskDetail';
+import UserProfile from '../pages/profile/UserProfile';
+import SettingsPage from '../pages/settings/SettingsPage';
 
 // Root layout that provides AuthContext to all routes
 const RootLayout = () => {
@@ -65,6 +67,14 @@ export const router = createBrowserRouter([
           {
             path: '/workspaces/:workspaceId/projects/:projectId/tasks/:taskId',
             element: <TaskDetail />
+          },
+          {
+            path: '/profile',
+            element: <UserProfile />
+          },
+          {
+            path: '/settings',
+            element: <SettingsPage />
           }
         ]
       },

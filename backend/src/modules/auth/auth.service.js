@@ -100,3 +100,47 @@ export async function refreshAccessToken(refreshToken) {
         throw new Error('Invalid refresh token.');
     }
 }
+
+/**
+ * Change user password
+ */
+export async function changePassword(userId, data) {
+    const { currentPassword, newPassword } = data;
+
+    if (!currentPassword || !newPassword) {
+        throw new Error('Current password and new password are required.');
+    }
+
+    // Validate new password
+    const passwordValidation = validatePassword(newPassword);
+    if (!passwordValidation.valid) {
+        throw new Error(passwordValidation.message);
+    }
+
+    // Find user
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user) {
+        throw new Error('User not found.');
+    }
+
+    // Verify current password
+    const valid = await bcrypt.compare(currentPassword, user.password);
+    if (!valid) {
+        throw new Error('Current password is incorrect.');
+    }
+
+    // Check if new password is same as current
+    const samePassword = await bcrypt.compare(newPassword, user.password);
+    if (samePassword) {
+        throw new Error('New password must be different from current password.');
+    }
+
+    // Hash new password and update
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await prisma.user.update({
+        where: { id: userId },
+        data: { password: hashedPassword }
+    });
+
+    return { message: 'Password changed successfully' };
+}
