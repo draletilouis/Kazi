@@ -5,6 +5,7 @@ import Button from '../../components/common/Button';
 import Modal from '../../components/common/Modal';
 import Spinner from '../../components/common/Spinner';
 import { useToast } from '../../context/ToastContext';
+import { validateLength } from '../../utils/validation';
 
 const WorkspacesPage = () => {
   const {
@@ -21,20 +22,43 @@ const WorkspacesPage = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedWorkspace, setSelectedWorkspace] = useState(null);
-  
+
   // Form data
   const [formData, setFormData] = useState({ name: '', description: '' });
+  const [errors, setErrors] = useState({ name: '', description: '' });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Validate form
+  const validateForm = () => {
+    const nameValidation = validateLength(formData.name, 3, 50);
+    const descValidation = formData.description
+      ? validateLength(formData.description, 0, 500)
+      : { valid: true, message: '' };
+
+    setErrors({
+      name: nameValidation.valid ? '' : nameValidation.message,
+      description: descValidation.valid ? '' : descValidation.message
+    });
+
+    return nameValidation.valid && descValidation.valid;
+  };
 
   // Handle create workspace
   const handleCreate = async (e) => {
     e.preventDefault();
+    if (!validateForm()) return;
+
     try {
+      setIsSubmitting(true);
       await addWorkspace(formData);
       setShowCreateModal(false);
       setFormData({ name: '', description: '' });
+      setErrors({ name: '', description: '' });
       toast.success('Workspace created successfully');
     } catch (err) {
       toast.error(err.message);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -50,14 +74,20 @@ const WorkspacesPage = () => {
 
   const handleUpdate = async (e) => {
     e.preventDefault();
+    if (!validateForm()) return;
+
     try {
+      setIsSubmitting(true);
       await editWorkspace(selectedWorkspace.id, formData);
       setShowEditModal(false);
       setFormData({ name: '', description: '' });
       setSelectedWorkspace(null);
+      setErrors({ name: '', description: '' });
       toast.success('Workspace updated successfully');
     } catch (err) {
       toast.error(err.message);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -152,34 +182,42 @@ const WorkspacesPage = () => {
           <form onSubmit={handleCreate}>
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Workspace Name *
+                Workspace Name * <span className="text-xs text-gray-500">({formData.name.length}/50)</span>
               </label>
               <input
                 type="text"
                 placeholder="My Workspace"
                 value={formData.name}
                 onChange={(e) => setFormData({...formData, name: e.target.value})}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${
+                  errors.name ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'
+                }`}
+                maxLength={50}
                 required
               />
+              {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
             </div>
 
             <div className="mb-6">
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Description
+                Description <span className="text-xs text-gray-500">({formData.description.length}/500)</span>
               </label>
               <textarea
                 placeholder="What is this workspace for?"
                 value={formData.description}
                 onChange={(e) => setFormData({...formData, description: e.target.value})}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${
+                  errors.description ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'
+                }`}
                 rows="3"
+                maxLength={500}
               />
+              {errors.description && <p className="mt-1 text-sm text-red-600">{errors.description}</p>}
             </div>
 
             <div className="flex gap-3">
-              <Button type="submit" className="flex-1">
-                Create
+              <Button type="submit" className="flex-1" disabled={isSubmitting}>
+                {isSubmitting ? 'Creating...' : 'Create'}
               </Button>
               <Button 
                 type="button"
@@ -200,35 +238,42 @@ const WorkspacesPage = () => {
           title="Edit Workspace"
         >
           <form onSubmit={handleUpdate}>
-            {/* Same form fields as create */}
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Workspace Name *
+                Workspace Name * <span className="text-xs text-gray-500">({formData.name.length}/50)</span>
               </label>
               <input
                 type="text"
                 value={formData.name}
                 onChange={(e) => setFormData({...formData, name: e.target.value})}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${
+                  errors.name ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'
+                }`}
+                maxLength={50}
                 required
               />
+              {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
             </div>
 
             <div className="mb-6">
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Description
+                Description <span className="text-xs text-gray-500">({formData.description.length}/500)</span>
               </label>
               <textarea
                 value={formData.description}
                 onChange={(e) => setFormData({...formData, description: e.target.value})}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${
+                  errors.description ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'
+                }`}
                 rows="3"
+                maxLength={500}
               />
+              {errors.description && <p className="mt-1 text-sm text-red-600">{errors.description}</p>}
             </div>
 
             <div className="flex gap-3">
-              <Button type="submit" className="flex-1">
-                Update
+              <Button type="submit" className="flex-1" disabled={isSubmitting}>
+                {isSubmitting ? 'Updating...' : 'Update'}
               </Button>
               <Button 
                 type="button"

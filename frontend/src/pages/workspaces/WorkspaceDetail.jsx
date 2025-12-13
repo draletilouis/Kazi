@@ -4,8 +4,10 @@ import { useState, useEffect } from 'react';
 import Button from '../../components/common/Button';
 import Modal from '../../components/common/Modal';
 import Spinner from '../../components/common/Spinner';
+import { SkeletonCard } from '../../components/common/SkeletonLoader';
 import { getWorkspace, getWorkspaceMembers, addWorkspaceMember, removeWorkspaceMember, updateWorkspaceMemberRole } from '../../api/workspaces';
 import { useToast } from '../../context/ToastContext';
+import { isValidEmail } from '../../utils/validation';
 
 const WorkspaceDetail = () => {
   // Get workspaceId from URL
@@ -39,6 +41,8 @@ const WorkspaceDetail = () => {
   const [loadingMembers, setLoadingMembers] = useState(true);
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [inviteEmail, setInviteEmail] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [isInviting, setIsInviting] = useState(false);
 
   // Fetch workspace details
   useEffect(() => {
@@ -129,7 +133,16 @@ const WorkspaceDetail = () => {
   // Handle invite member
   const handleInviteMember = async (e) => {
     e.preventDefault();
+
+    // Validate email
+    if (!isValidEmail(inviteEmail)) {
+      setEmailError('Please enter a valid email address');
+      return;
+    }
+
     try {
+      setIsInviting(true);
+      setEmailError('');
       await addWorkspaceMember(workspaceId, { email: inviteEmail });
       setShowInviteModal(false);
       setInviteEmail('');
@@ -139,6 +152,8 @@ const WorkspaceDetail = () => {
       toast.success('Member invited successfully');
     } catch (err) {
       toast.error(err.message);
+    } finally {
+      setIsInviting(false);
     }
   };
 
@@ -268,7 +283,13 @@ const WorkspaceDetail = () => {
         </div>
 
         {loadingMembers ? (
-          <div className="text-gray-500">Loading members...</div>
+          <div className="bg-white rounded-lg border divide-y">
+            {[1, 2, 3].map(i => (
+              <div key={i} className="p-4">
+                <SkeletonCard />
+              </div>
+            ))}
+          </div>
         ) : members.length === 0 ? (
           <div className="bg-gray-50 rounded-lg p-4 text-center">
             <p className="text-gray-500">No members yet</p>
@@ -422,15 +443,23 @@ const WorkspaceDetail = () => {
               <input
                 type="email"
                 value={inviteEmail}
-                onChange={(e) => setInviteEmail(e.target.value)}
-                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                onChange={(e) => {
+                  setInviteEmail(e.target.value);
+                  setEmailError('');
+                }}
+                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${
+                  emailError ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'
+                }`}
                 placeholder="member@example.com"
                 required
               />
+              {emailError && <p className="mt-1 text-sm text-red-600">{emailError}</p>}
             </div>
 
             <div className="flex gap-3">
-              <Button type="submit" className="flex-1">Invite</Button>
+              <Button type="submit" className="flex-1" disabled={isInviting}>
+                {isInviting ? 'Inviting...' : 'Invite'}
+              </Button>
               <Button
                 type="button"
                 variant="secondary"
