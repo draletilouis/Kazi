@@ -192,7 +192,8 @@ const WorkspaceDetail = () => {
   if (error) return <div className="text-red-600">Error: {error}</div>;
 
   return (
-    <div className="container mx-auto p-6">
+    <div className="h-full overflow-y-auto">
+      <div className="container mx-auto p-6">
       {/* Breadcrumb navigation */}
       <nav className="mb-6 text-sm">
         <Link to="/workspaces" className="text-blue-600 hover:underline">
@@ -471,6 +472,7 @@ const WorkspaceDetail = () => {
           </form>
         </Modal>
       )}
+      </div>
     </div>
   );
 };

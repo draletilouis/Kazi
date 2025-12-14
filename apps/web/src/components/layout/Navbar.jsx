@@ -1,7 +1,7 @@
 import { useContext, useState, useRef, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContextDefinition';
-import { User, LogOut, Settings, ChevronDown, LayoutGrid } from 'lucide-react';
+import { User, LogOut, Settings, ChevronDown, LayoutGrid, Search } from 'lucide-react';
 
 const Navbar = () => {
   const { user, logout, isAuthenticated } = useContext(AuthContext);
@@ -69,8 +69,23 @@ const Navbar = () => {
             </div>
           </div>
 
-          {/* Right: User Menu */}
+          {/* Right: Search and User Menu */}
           <div className="flex items-center space-x-4">
+            {/* Search Button */}
+            <button
+              className="flex items-center space-x-2 px-4 py-2 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+              onClick={() => {
+                // Placeholder for search functionality
+                console.log('Search clicked');
+              }}
+            >
+              <Search className="w-4 h-4 text-gray-600" />
+              <span className="hidden sm:inline text-sm text-gray-600">Search</span>
+              <kbd className="hidden md:inline px-2 py-1 text-xs font-semibold text-gray-500 bg-white border border-gray-200 rounded">
+                ⌘K
+              </kbd>
+            </button>
+
             {/* User Menu Dropdown */}
             <div className="relative" ref={menuRef}>
               <button

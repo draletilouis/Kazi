@@ -133,24 +133,30 @@ const TaskDetail = () => {
 
   if (loading) {
     return (
-      <div className="container mx-auto p-6">
-        <div className="text-gray-500">Loading task...</div>
+      <div className="h-full overflow-y-auto">
+        <div className="container mx-auto p-6">
+          <div className="text-gray-500">Loading task...</div>
+        </div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="container mx-auto p-6">
-        <div className="text-red-600">Error: {error}</div>
+      <div className="h-full overflow-y-auto">
+        <div className="container mx-auto p-6">
+          <div className="text-red-600">Error: {error}</div>
+        </div>
       </div>
     );
   }
 
   if (!task) {
     return (
-      <div className="container mx-auto p-6">
-        <div className="text-gray-500">Task not found</div>
+      <div className="h-full overflow-y-auto">
+        <div className="container mx-auto p-6">
+          <div className="text-gray-500">Task not found</div>
+        </div>
       </div>
     );
   }
@@ -168,7 +174,8 @@ const TaskDetail = () => {
   };
 
   return (
-    <div className="container mx-auto p-6">
+    <div className="h-full overflow-y-auto">
+      <div className="container mx-auto p-6">
       {/* Breadcrumb Navigation */}
       <nav className="text-sm mb-4 text-gray-600">
         <Link to="/workspaces" className="hover:text-blue-600">Workspaces</Link>
@@ -383,6 +390,7 @@ const TaskDetail = () => {
           </div>
         </div>
       </Modal>
+      </div>
     </div>
   );
 };

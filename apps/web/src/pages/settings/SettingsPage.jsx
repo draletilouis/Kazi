@@ -79,7 +79,7 @@ const SettingsPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="h-full overflow-y-auto bg-gray-100">
       <div className="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-6">

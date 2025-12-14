@@ -98,14 +98,17 @@ const ProjectDetail = () => {
 
   if (projectsLoading) {
     return (
-      <div className="container mx-auto p-6">
-        <div className="text-gray-500">Loading project...</div>
+      <div className="h-full overflow-y-auto">
+        <div className="container mx-auto p-6">
+          <div className="text-gray-500">Loading project...</div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto p-6">
+    <div className="h-full overflow-y-auto">
+      <div className="container mx-auto p-6">
       {/* Breadcrumb Navigation */}
       <nav className="text-sm mb-4 text-gray-600">
         <Link to="/workspaces" className="hover:text-blue-600">Workspaces</Link>
@@ -161,6 +164,7 @@ const ProjectDetail = () => {
           projectId={projectId}
         />
       </Modal>
+      </div>
     </div>
   );
 };

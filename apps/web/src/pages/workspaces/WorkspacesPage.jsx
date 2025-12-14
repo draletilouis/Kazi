@@ -145,7 +145,7 @@ const WorkspacesPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="h-full overflow-y-auto bg-gray-50">
       <div className="w-full px-6 py-8">
         {/* Header */}
         <div className="mb-8">

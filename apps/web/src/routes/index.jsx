@@ -3,7 +3,10 @@ import { AuthProvider } from '../context/AuthContext';
 import { ToastProvider } from '../context/ToastContext';
 import PrivateRoute from './PrivateRoute';
 import Navbar from '../components/layout/Navbar';
+import Sidebar from '../components/layout/Sidebar';
 import Toast from '../components/common/Toast';
+import { useContext } from 'react';
+import { AuthContext } from '../context/AuthContextDefinition';
 
 // Page imports
 import Login from '../pages/auth/Login';
@@ -15,13 +18,33 @@ import TaskDetail from '../pages/tasks/TaskDetail';
 import UserProfile from '../pages/profile/UserProfile';
 import SettingsPage from '../pages/settings/SettingsPage';
 
+// Layout for authenticated pages with sidebar
+const AuthenticatedLayout = () => {
+  const { isAuthenticated } = useContext(AuthContext);
+
+  if (!isAuthenticated) {
+    return <Outlet />;
+  }
+
+  return (
+    <div className="flex h-screen overflow-hidden">
+      <Sidebar />
+      <div className="flex-1 flex flex-col overflow-hidden">
+        <Navbar />
+        <main className="flex-1 overflow-hidden bg-gray-50">
+          <Outlet />
+        </main>
+      </div>
+    </div>
+  );
+};
+
 // Root layout that provides AuthContext to all routes
 const RootLayout = () => {
   return (
     <AuthProvider>
       <ToastProvider>
-        <Navbar />
-        <Outlet />
+        <AuthenticatedLayout />
         <Toast />
       </ToastProvider>
     </AuthProvider>
