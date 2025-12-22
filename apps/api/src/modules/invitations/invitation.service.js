@@ -77,12 +77,15 @@ export async function createInvitation(workspaceId, inviterId, data) {
 
         const invitationUrl = `${process.env.APP_URL || 'http://localhost:5173'}/invitations/accept?token=${existingInvitation.token}`;
 
-        await emailService.sendWorkspaceInvitation(
+        emailService.sendWorkspaceInvitation(
             inviteeEmail,
             workspace.name,
             inviter.name || inviter.email,
             invitationUrl
-        );
+        ).catch(error => {
+            console.error('Failed to send workspace invitation email:', error);
+            // Don't fail the invitation if email fails
+        });
 
         return {
             message: "Invitation resent successfully",
