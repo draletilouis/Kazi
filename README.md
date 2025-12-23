@@ -4,6 +4,18 @@ A modern, collaborative task management system built with React and Node.js. Fea
 
 **Monorepo Architecture** | **JWT Authentication** | **PostgreSQL Database** | **Email Integration** | **Modern UI/UX**
 
+## Live Demo
+
+**Try it out:** [https://kazi-web-production.up.railway.app/register](https://kazi-web-production.up.railway.app/register)
+
+Create a free account and explore all features including:
+- Workspace and project management
+- Kanban task boards with drag-and-drop
+- Team collaboration with role-based permissions
+- Email invitations and notifications
+
+**Note:** Email functionality (password reset, invitations) may not work properly in the demo environment as no custom domain is configured. For full email features, please run the application locally with your own email service configuration.
+
 ## Project Status
 
 🟢 **Production Ready** - Core features complete with comprehensive testing
